@@ -134,7 +134,7 @@
             pointer-events: none;
         }
 
-        .hero-content { max-width: 800px; }
+        .hero-content { width: 1000px; }
 
         .hero-tag {
             font-family: 'Space Mono', monospace;
@@ -362,7 +362,7 @@
 
         /* ── RESPONSIVE ── */
         @media (max-width: 1024px) {
-            .about-grid { grid-template-columns: 220px 1fr; gap: 3rem; }
+            .about-grid { what-template-columns: 220px 1fr; gap: 3rem; }
             .skills-list { grid-column: 1 / -1; }
             .contact-grid { gap: 3rem; }
         }
@@ -632,16 +632,22 @@
                 <div class="email-template-box">
                     <h3>Quick Email Templates</h3>
                     <div class="email-btns">
-                        <a href="mailto:binod.basnet777@gmail.com" class="email-btn">
-                            <span>📧</span><span>Job Opportunity</span><span class="arrow">→</span>
+                        <a href="mailto:binod.basnet777@gmail.com?subject=Job%20Opportunity%20Inquiry&body=Hello%20Binod,%0D%0A%0D%0AI am reaching out regarding a job opportunity. Please provide more details about the position.%0D%0A%0D%0AThank you!" class="email-btn">
+                            <span class="icon">📧</span>
+                            <span class="text">Job Opportunity</span>
+                            <span class="arrow">→</span>
                         </a>
-                        <a href="mailto:binod.basnet777@gmail.com" class="email-btn">
-                            <span>🎓</span><span>Scholarship Info</span><span class="arrow">→</span>
+                        <a href="mailto:binod.basnet777@gmail.com?subject=Scholarship%20Information&body=Hello%20Binod,%0D%0A%0D%0AI am interested in learning more about scholarship opportunities. Could you please share details and requirements?%0D%0A%0D%0AThank you!" class="email-btn">
+                            <span class="icon">🎓</span>
+                            <span class="text">Scholarship Info</span>
+                            <span class="arrow">→</span>
                         </a>
-                        <a href="mailto:binod.basnet777@gmail.com" class="email-btn">
-                            <span>💬</span><span>General Inquiry</span><span class="arrow">→</span>
+                        <a href="mailto:binod.basnet777@gmail.com?subject=General%20Inquiry&body=Hello%20Binod,%0D%0A%0D%0AI have a question and would like to get in touch.%0D%0A%0D%0AThank you!" class="email-btn">
+                            <span class="icon">💬</span>
+                            <span class="text">General Inquiry</span>
+                            <span class="arrow">→</span>
                         </a>
-                    </div>
+                    </div>                    
                 </div>
             </div>
             <div class="contact-links">
