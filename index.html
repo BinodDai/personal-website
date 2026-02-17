@@ -8,11 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --bg-primary: #0a0a0a;
@@ -24,6 +20,8 @@
             --border: #2a2a2a;
         }
 
+        html { scroll-behavior: smooth; }
+
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--bg-primary);
@@ -32,911 +30,711 @@
             overflow-x: hidden;
         }
 
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+        ::selection { background: var(--accent); color: #000; }
+
         .grain {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             opacity: 0.03;
             z-index: 1000;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
 
-        /* Navigation */
+        /* ── NAV ── */
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(10, 10, 10, 0.8);
+            top: 0; left: 0; right: 0;
+            background: rgba(10,10,10,0.85);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
-            padding: 1.5rem 0;
+            padding: 1.25rem 0;
             z-index: 100;
             animation: slideDown 0.6s ease-out;
         }
 
         @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(-100%); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
         }
 
-        nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
 
         .logo {
             font-family: 'Space Mono', monospace;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-decoration: none;
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
             letter-spacing: -0.5px;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
 
         .nav-links a {
             color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.3s;
-            position: relative;
+            text-decoration: none; font-size: 0.95rem;
+            transition: color 0.2s; position: relative;
         }
-
         .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent);
-            transition: width 0.3s;
+            content: ''; position: absolute;
+            bottom: -3px; left: 0;
+            width: 0; height: 1px;
+            background: var(--accent); transition: width 0.3s;
         }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
 
-        .nav-links a:hover {
-            color: var(--text-primary);
+        .nav-cv {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem; color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 0.4rem 1rem; border-radius: 4px;
+            text-decoration: none; transition: all 0.2s;
         }
+        .nav-cv:hover { background: var(--accent); color: #000; }
+        .nav-cv::after { display: none !important; }
 
-        .nav-links a:hover::after {
-            width: 100%;
+        /* hamburger */
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+        .hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none; position: fixed;
+            top: 64px; left: 0; right: 0;
+            background: rgba(10,10,10,0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem; z-index: 99;
+            flex-direction: column; gap: 1.5rem;
         }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a { font-family: 'Space Mono', monospace; font-size: 1rem; color: var(--text-secondary); text-decoration: none; padding: 0.5rem 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+        .mobile-menu a:hover { color: var(--accent); }
 
-        /* Hero Section */
+        /* ── HERO ── */
         .hero {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
+            display: flex; align-items: center;
             padding-top: 80px;
-            position: relative;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; top: -200px; right: -200px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,255,136,0.07) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .hero-content {
-            max-width: 800px;
-        }
+        .hero-content { max-width: 800px; }
 
         .hero-tag {
             font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+            font-size: 0.8rem; color: var(--accent);
+            letter-spacing: 0.1em; margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.75rem;
         }
+        .hero-tag::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent); }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            letter-spacing: -2px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        .hero h1 {
+            font-size: clamp(2.8rem, 8vw, 5.5rem);
+            font-weight: 700; line-height: 1.05;
+            letter-spacing: -2px; margin-bottom: 1.5rem;
         }
 
         .hero-text {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 2.5rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.6s forwards;
+            font-size: 1.15rem; color: var(--text-secondary);
+            max-width: 560px; margin-bottom: 2.5rem; line-height: 1.75;
         }
 
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.8s forwards;
-        }
+        .cta-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
 
         .btn {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            display: inline-block;
-            border: 1px solid transparent;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.9rem 2rem; border-radius: 6px;
+            font-family: 'Space Mono', monospace; font-size: 0.82rem;
+            font-weight: 400; text-decoration: none;
+            transition: all 0.25s; cursor: pointer; border: none;
+            letter-spacing: 0.03em;
         }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:hover { background: var(--accent-dim); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,255,136,0.2); }
+        .btn-secondary { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--bg-primary);
-            border-color: var(--accent);
-        }
+        /* ── SECTIONS ── */
+        section { padding: 6rem 0; border-top: 1px solid var(--border); }
 
-        .btn-primary:hover {
-            background: var(--accent-dim);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border-color: var(--border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* Section Styles */
-        section {
-            padding: 6rem 0;
-            border-top: 1px solid var(--border);
-        }
-
-        .section-header {
-            margin-bottom: 4rem;
-        }
-
+        .section-header { margin-bottom: 4rem; }
         .section-tag {
             font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--accent);
+            font-size: 0.75rem; color: var(--accent);
+            letter-spacing: 0.15em; text-transform: uppercase;
             margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.75rem;
         }
+        .section-tag::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
 
         .section-title {
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            letter-spacing: -1px;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700; letter-spacing: -1.5px; line-height: 1.1;
         }
 
-        .section-description {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-        }
-
-        /* About Section */
+        /* ── ABOUT ── */
         .about-grid {
             display: grid;
-            grid-template-columns: 300px 1fr 1fr;
-            gap: 4rem;
-            align-items: start;
+            grid-template-columns: 280px 1fr 1fr;
+            gap: 4rem; align-items: start;
         }
 
+        .profile-photo-wrap { position: relative; }
         .profile-photo {
-            position: relative;
-        }
-
-        .profile-photo img {
-            width: 100%;
-            border-radius: 12px;
+            width: 100%; border-radius: 10px;
             border: 2px solid var(--border);
-            transition: all 0.3s;
+            display: block; filter: grayscale(15%);
+            transition: filter 0.3s, border-color 0.3s;
         }
-
-        .profile-photo img:hover {
-            border-color: var(--accent);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
-        }
+        .profile-photo-wrap:hover .profile-photo { filter: grayscale(0%); border-color: var(--accent); }
 
         .about-text p {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
-            font-size: 1.05rem;
+            color: var(--text-secondary); margin-bottom: 1.25rem;
+            font-size: 1rem; line-height: 1.8;
         }
 
-        .skills-list {
-            display: grid;
-            gap: 2rem;
-        }
+        .skills-list { display: grid; gap: 2rem; }
 
         .skill-category h3 {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem; color: var(--accent);
+            letter-spacing: 0.1em; text-transform: uppercase;
+            margin-bottom: 0.75rem;
         }
 
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
         .skill-tag {
-            padding: 0.5rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: all 0.3s;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem; color: var(--text-secondary);
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            padding: 0.35rem 0.75rem; border-radius: 4px;
+            transition: all 0.2s;
         }
+        .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
 
-        .skill-tag:hover {
-            border-color: var(--accent);
-            color: var(--text-primary);
-            transform: translateY(-2px);
-        }
-
-        /* Experience Section */
-        .experience-list {
-            display: flex;
-            flex-direction: column;
-            gap: 3rem;
-        }
+        /* ── EXPERIENCE ── */
+        .experience-list { display: flex; flex-direction: column; gap: 2rem; }
 
         .experience-item {
-            padding: 2rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            transition: all 0.3s;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 10px; padding: 2rem 2.5rem;
+            transition: border-color 0.3s, transform 0.3s;
+            position: relative; overflow: hidden;
         }
-
-        .experience-item:hover {
-            border-color: var(--accent);
-            transform: translateX(8px);
+        .experience-item::before {
+            content: ''; position: absolute;
+            left: 0; top: 0; bottom: 0; width: 3px;
+            background: var(--accent);
+            transform: scaleY(0); transition: transform 0.3s;
+            border-radius: 0 2px 2px 0;
         }
+        .experience-item:hover { border-color: #333; transform: translateX(6px); }
+        .experience-item:hover::before { transform: scaleY(1); }
 
         .experience-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            display: flex; justify-content: space-between;
+            align-items: flex-start; margin-bottom: 1.5rem; gap: 1rem;
         }
 
-        .experience-title h3 {
-            font-size: 1.4rem;
-            margin-bottom: 0.3rem;
+        .experience-title h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .company { color: var(--accent); font-size: 1rem; font-weight: 500; }
+
+        .experience-meta { text-align: right; }
+        .duration { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+        .location { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); }
+        .current-badge {
+            display: inline-block; margin-top: 0.4rem;
+            background: rgba(0,255,136,0.1); color: var(--accent);
+            border: 1px solid rgba(0,255,136,0.3);
+            font-family: 'Space Mono', monospace; font-size: 0.65rem;
+            padding: 0.2rem 0.6rem; border-radius: 999px; letter-spacing: 0.05em;
         }
 
-        .company {
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-
-        .experience-meta {
-            text-align: right;
-        }
-
-        .duration {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .location {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .experience-description {
-            list-style: none;
-            color: var(--text-secondary);
-        }
-
+        .experience-description { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
         .experience-description li {
-            padding-left: 1.5rem;
-            margin-bottom: 0.8rem;
-            position: relative;
+            font-size: 0.95rem; color: var(--text-secondary);
+            padding-left: 1.5rem; position: relative;
         }
+        .experience-description li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
 
-        .experience-description li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-        }
-
-        /* Projects Section */
+        /* ── PROJECTS ── */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
         }
 
         .project-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s;
-            cursor: pointer;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 10px; padding: 2rem;
+            transition: all 0.3s; position: relative; overflow: hidden;
         }
-
-        .project-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+        .project-card::after {
+            content: ''; position: absolute;
+            bottom: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(to right, var(--accent), transparent);
+            transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
         }
+        .project-card:hover { border-color: #333; transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .project-card:hover::after { transform: scaleX(1); }
 
-        .project-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+        .project-num { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 0.75rem; opacity: 0.7; }
+        .project-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.5px; }
+        .project-tech { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent); margin-bottom: 0.75rem; }
+        .project-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.65; }
+        .project-points { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+        .project-points li { font-size: 0.85rem; color: var(--text-secondary); padding-left: 1rem; position: relative; }
+        .project-points li::before { content: '•'; position: absolute; left: 0; color: var(--accent); }
+
+        /* ── CONTACT ── */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+
+        .contact-text h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -1.5px; margin-bottom: 1.25rem; }
+        .contact-text p { font-size: 1rem; color: var(--text-secondary); line-height: 1.75; margin-bottom: 2rem; }
+
+        .email-template-box {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 10px; padding: 1.5rem;
         }
-
-        .project-tech {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--accent);
+        .email-template-box h3 {
+            font-family: 'Space Mono', monospace; font-size: 0.75rem;
+            color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
             margin-bottom: 1rem;
         }
-
-        .project-description {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
+        .email-btns { display: flex; flex-direction: column; gap: 0.75rem; }
+        .email-btn {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.85rem 1.25rem;
+            background: var(--bg-primary); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text-secondary);
+            text-decoration: none; font-size: 0.9rem;
+            transition: all 0.25s; cursor: pointer; font-family: 'DM Sans', sans-serif;
         }
+        .email-btn:hover { border-color: var(--accent); color: var(--text-primary); transform: translateX(6px); }
+        .email-btn .arrow { margin-left: auto; color: var(--accent); opacity: 0; transition: opacity 0.2s, transform 0.2s; }
+        .email-btn:hover .arrow { opacity: 1; transform: translateX(4px); }
 
-        .project-highlights {
-            list-style: none;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .project-highlights li {
-            padding-left: 1rem;
-            margin-bottom: 0.5rem;
-            position: relative;
-        }
-
-        .project-highlights li::before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-        }
-
-        /* Contact Section */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .contact-text h2 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 1.5rem;
-        }
-
-        .contact-text p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .contact-links {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .contact-links { display: flex; flex-direction: column; gap: 1rem; }
 
         .contact-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.3s;
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 10px; text-decoration: none; color: var(--text-primary);
+            transition: all 0.25s;
         }
-
-        .contact-link:hover {
-            border-color: var(--accent);
-            transform: translateX(8px);
-        }
+        .contact-link:hover { border-color: var(--accent); transform: translateX(8px); }
 
         .contact-link-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--accent);
+            width: 40px; height: 40px; background: var(--bg-primary);
+            border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+            transition: background 0.25s;
+        }
+        .contact-link:hover .contact-link-icon { background: rgba(0,255,136,0.1); }
+        .contact-link-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+        .contact-link-value { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* ── FOOTER ── */
+        footer { border-top: 1px solid var(--border); padding: 2.5rem 0; }
+        footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        footer p { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 0.05em; }
+        .footer-accent { color: var(--accent); }
+        .back-top { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        .back-top:hover { color: var(--accent); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .about-grid { grid-template-columns: 220px 1fr; gap: 3rem; }
+            .skills-list { grid-column: 1 / -1; }
+            .contact-grid { gap: 3rem; }
         }
 
-        .contact-link-text {
-            flex: 1;
-        }
-
-        .contact-link-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .contact-link-value {
-            font-weight: 500;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 3rem 0;
-            text-align: center;
-        }
-
-        footer p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem;
-            }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
 
-            nav .container {
-                padding: 0 1rem;
-            }
+            section { padding: 4rem 0; }
+            .section-title { letter-spacing: -1px; }
 
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.85rem;
-            }
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .profile-photo-wrap { max-width: 220px; margin: 0 auto; }
 
-            .logo {
-                font-size: 1rem;
-            }
+            .experience-header { flex-direction: column; gap: 0.5rem; }
+            .experience-meta { text-align: left; }
+            .experience-item { padding: 1.5rem; }
 
-            .hero {
-                min-height: auto;
-                padding: 2rem 0;
-            }
+            .projects-grid { grid-template-columns: 1fr; }
 
-            .hero-text {
-                font-size: 1rem;
-            }
+            .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
 
-            .cta-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .about-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .profile-photo {
-                max-width: 200px;
-                margin: 0 auto;
-            }
-
-            .about-text p {
-                font-size: 1rem;
-            }
-
-            .contact-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .contact-text h2 {
-                font-size: 2rem;
-            }
-
-            .contact-text p {
-                font-size: 1rem;
-            }
-
-            .experience-header {
-                flex-direction: column;
-            }
-
-            .experience-meta {
-                text-align: left;
-            }
-
-            .experience-item {
-                padding: 1.5rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 1.75rem;
-            }
-
-            section {
-                padding: 3rem 0;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-card {
-                padding: 1.5rem;
-            }
+            .cta-buttons { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
         }
 
         @media (max-width: 480px) {
-            .nav-links {
-                display: none;
-            }
-
-            h1 {
-                font-size: 1.75rem;
-                letter-spacing: -1px;
-            }
-
-            .hero-tag {
-                font-size: 0.75rem;
-            }
-
-            .section-tag {
-                font-size: 0.75rem;
-            }
-
-            .section-title {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Scroll animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+            nav { padding: 1rem 0; }
+            .hero { padding: 70px 0 3rem; }
+            .hero h1 { letter-spacing: -1.5px; }
+            .section-title { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
-    <div class="grain"></div>
-    
-    <nav>
-        <div class="container">
-            <a href="#" class="logo">BB</a>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-tag">Android Engineer from Nepal</div>
-                <h1>Building Mobile Apps That People Love</h1>
-                <p class="hero-text">
-                    I'm Binod Basnet, an Android Engineer creating high-quality mobile apps. I turn ideas into real products using Kotlin, Jetpack Compose, and modern Android tools.
-                </p>
-                <div class="cta-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="Binod_Basnet_CV.pdf" class="btn btn-secondary" download>Download CV</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                </div>
+<div class="grain"></div>
+
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <a href="#hero" class="logo">BB.</a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="Binod_Basnet_CV.pdf" download class="nav-cv">↓ CV</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#about" class="mob-link">About</a>
+    <a href="#experience" class="mob-link">Experience</a>
+    <a href="#projects" class="mob-link">Projects</a>
+    <a href="#contact" class="mob-link">Contact</a>
+    <a href="Binod_Basnet_CV.pdf" download>↓ Download CV</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-tag">Android Engineer · Kathmandu, Nepal</div>
+            <h1>Building Mobile<br>Apps That<br>People Love.</h1>
+            <p class="hero-text">
+                I'm Binod Basnet — an Android Engineer creating high-quality apps using Kotlin, Jetpack Compose, and modern Android architecture.
+            </p>
+            <div class="cta-buttons">
+                <a href="#projects" class="btn btn-primary">View My Work →</a>
+                <a href="Binod_Basnet_CV.pdf" download class="btn btn-secondary">↓ Download CV</a>
+                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section id="about">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-tag">About Me</div>
-                <h2 class="section-title">Who I Am</h2>
+<!-- ABOUT -->
+<section id="about">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag">About Me</div>
+            <h2 class="section-title">Who I Am</h2>
+        </div>
+        <div class="about-grid">
+            <div class="profile-photo-wrap">
+                <img src="profile.jpg" alt="Binod Basnet" class="profile-photo">
             </div>
-            <div class="about-grid">
-                <div class="profile-photo fade-in">
-                    <img src="profile.jpg" alt="Binod Basnet">
-                </div>
-                <div class="about-text fade-in">
-                    <p>
-                        I'm an Android Engineer based in Kathmandu, Nepal. I graduated from Texas International College with a degree in Computer Science and Information Technology.
-                    </p>
-                    <p>
-                        I've worked on different types of apps - from banking and fintech to matchmaking and live streaming. I love solving problems and building features that make apps better for users.
-                    </p>
-                    <p>
-                        Right now, I'm working at F1Soft International where I build remittance apps and help teams deliver quality software. I'm also planning to pursue my Master's degree if I get a scholarship.
-                    </p>
-                </div>
-                <div class="skills-list fade-in">
-                    <div class="skill-category">
-                        <h3>Languages</h3>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Kotlin</span>
-                            <span class="skill-tag">Java</span>
-                            <span class="skill-tag">C</span>
-                            <span class="skill-tag">C++</span>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Frameworks & Technologies</h3>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Jetpack Compose</span>
-                            <span class="skill-tag">Hilt</span>
-                            <span class="skill-tag">Retrofit</span>
-                            <span class="skill-tag">Room</span>
-                            <span class="skill-tag">Firebase</span>
-                            <span class="skill-tag">WebRTC</span>
-                            <span class="skill-tag">Coroutines</span>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Tools</h3>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Android Studio</span>
-                            <span class="skill-tag">Git</span>
-                            <span class="skill-tag">Jenkins</span>
-                            <span class="skill-tag">Fastlane</span>
-                            <span class="skill-tag">Jira</span>
-                        </div>
+            <div class="about-text">
+                <p>I'm an Android Engineer based in Kathmandu, Nepal. I graduated from Texas International College with a degree in Computer Science and Information Technology.</p>
+                <p>I've worked on different types of apps — from banking and fintech to matchmaking and live streaming. I love solving problems and building features that make apps better for users.</p>
+                <p>Right now, I'm working at F1Soft International where I build remittance apps and help teams deliver quality software. I'm also planning to pursue my Master's degree if I get a scholarship.</p>
+            </div>
+            <div class="skills-list">
+                <div class="skill-category">
+                    <h3>Languages</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Kotlin</span>
+                        <span class="skill-tag">Java</span>
+                        <span class="skill-tag">C</span>
+                        <span class="skill-tag">C++</span>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="experience">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-tag">Experience</div>
-                <h2 class="section-title">Where I've Worked</h2>
-            </div>
-            <div class="experience-list">
-                <div class="experience-item fade-in">
-                    <div class="experience-header">
-                        <div class="experience-title">
-                            <h3>Android Engineer</h3>
-                            <div class="company">F1Soft International</div>
-                        </div>
-                        <div class="experience-meta">
-                            <div class="duration">Aug 2024 - Present</div>
-                            <div class="location">Sanepa, Lalitpur</div>
-                        </div>
-                    </div>
-                    <ul class="experience-description">
-                        <li>Built a remittance app using Kotlin and Jetpack Compose</li>
-                        <li>Created a custom Image Picker component using C and C++ for better performance</li>
-                        <li>Set up CI/CD with Fastlane to make builds and deployments automatic</li>
-                        <li>Managed tasks using Azure DevOps and used GitLab for code management</li>
-                        <li>Followed Agile methods and met tight deadlines</li>
-                    </ul>
-                </div>
-
-                <div class="experience-item fade-in">
-                    <div class="experience-header">
-                        <div class="experience-title">
-                            <h3>Android Engineer</h3>
-                            <div class="company">InfoDevelopers</div>
-                        </div>
-                        <div class="experience-meta">
-                            <div class="duration">Jul 2021 - Aug 2024</div>
-                            <div class="location">Mitrapark, Kathmandu</div>
-                        </div>
-                    </div>
-                    <ul class="experience-description">
-                        <li>Changed the codebase from Java to Kotlin to improve speed and maintenance</li>
-                        <li>Worked on multiple projects including mobile banking apps</li>
-                        <li>Set up CI/CD using Jenkins for automatic builds</li>
-                        <li>Helped junior developers learn best practices and improve their code</li>
-                        <li>Built audio and video call features into mobile apps using WebRTC</li>
-                        <li>Fixed bugs on different Android devices and versions</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="projects">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-tag">Projects</div>
-                <h2 class="section-title">What I've Built</h2>
-            </div>
-            <div class="projects-grid">
-                <div class="project-card fade-in">
-                    <h3>FoneMoney</h3>
-                    <div class="project-tech">Kotlin • Jetpack Compose • C/C++</div>
-                    <p class="project-description">
-                        A secure remittance app for fast international money transfers.
-                    </p>
-                    <ul class="project-highlights">
-                        <li>Built with Jetpack Compose for modern UI</li>
-                        <li>Used C/C++ for native image handling</li>
-                        <li>Worked with international teams</li>
-                    </ul>
-                </div>
-
-                <div class="project-card fade-in">
-                    <h3>mDabali</h3>
-                    <div class="project-tech">Kotlin • Jetpack Compose • Material 3</div>
-                    <p class="project-description">
-                        A microfinance banking app with online and offline payment services.
-                    </p>
-                    <ul class="project-highlights">
-                        <li>Changed codebase from Java to Kotlin</li>
-                        <li>Added Material Design 3 for better UI</li>
-                        <li>Supports multiple app variants</li>
-                    </ul>
-                </div>
-
-                <div class="project-card fade-in">
-                    <h3>Nimbuzz</h3>
-                    <div class="project-tech">Kotlin • WebRTC • ExoPlayer</div>
-                    <p class="project-description">
-                        A complete digital platform with chat, video calls, streaming, and shopping.
-                    </p>
-                    <ul class="project-highlights">
-                        <li>Built audio/video calls with WebRTC</li>
-                        <li>Added live streaming with ExoPlayer</li>
-                        <li>Worked with local and international teams</li>
-                    </ul>
-                </div>
-
-                <div class="project-card fade-in">
-                    <h3>Bihebari</h3>
-                    <div class="project-tech">Kotlin • WebRTC • Firebase</div>
-                    <p class="project-description">
-                        An online Nepalese matchmaking platform to help people find their life partner.
-                    </p>
-                    <ul class="project-highlights">
-                        <li>Added video and audio calls with WebRTC</li>
-                        <li>Used Firebase for authentication</li>
-                        <li>Created smooth navigation experience</li>
-                    </ul>
-                </div>
-
-                <div class="project-card fade-in">
-                    <h3>Aqua World App</h3>
-                    <div class="project-tech">Kotlin • Room • Retrofit</div>
-                    <p class="project-description">
-                        An online water ordering app with a wide range of water supply products.
-                    </p>
-                    <ul class="project-highlights">
-                        <li>Published on Google Play Store</li>
-                        <li>Used Room for offline storage</li>
-                        <li>Added Firebase analytics</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact">
-        <div class="container">
-            <div class="contact-grid">
-                <div class="contact-text fade-in">
-                    <h2>Let's Work Together</h2>
-                    <p>
-                        I'm looking for Master's degree opportunities with scholarships. If you have any opportunities or just want to say hi, feel free to reach out!
-                    </p>
-                    
-                    <div style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px;">
-                        <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent);">Quick Email Templates</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">Click a button to send me an email:</p>
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            <a href="mailto:binod.basnet777@gmail.com?subject=Job%20Opportunity&body=Hi%20Binod%2C%0A%0AI%20saw%20your%20portfolio%20and%20I'd%20like%20to%20connect%20about%20a%20job%20opportunity.%0A%0AMy%20name%3A%20%0AMy%20organization%3A%20%0AMy%20message%3A%20%0A%0AThanks!" style="padding: 0.75rem 1.5rem; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; text-decoration: none; text-align: center; font-size: 0.9rem; transition: all 0.3s;">
-                                📧 Job Opportunity
-                            </a>
-                            <a href="mailto:binod.basnet777@gmail.com?subject=Scholarship%20Information&body=Hi%20Binod%2C%0A%0AI%20saw%20your%20portfolio%20and%20I'd%20like%20to%20connect%20about%20scholarship%20opportunities.%0A%0AMy%20name%3A%20%0AMy%20organization%3A%20%0AMy%20message%3A%20%0A%0AThanks!" style="padding: 0.75rem 1.5rem; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; text-decoration: none; text-align: center; font-size: 0.9rem; transition: all 0.3s;">
-                                🎓 Scholarship Info
-                            </a>
-                            <a href="mailto:binod.basnet777@gmail.com?subject=General%20Inquiry&body=Hi%20Binod%2C%0A%0AI%20saw%20your%20portfolio%20and%20I'd%20like%20to%20connect.%0A%0AMy%20name%3A%20%0AMy%20message%3A%20%0A%0AThanks!" style="padding: 0.75rem 1.5rem; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; text-decoration: none; text-align: center; font-size: 0.9rem; transition: all 0.3s;">
-                                💬 General Inquiry
-                            </a>
-                        </div>
+                <div class="skill-category">
+                    <h3>Frameworks &amp; Technologies</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Jetpack Compose</span>
+                        <span class="skill-tag">Hilt</span>
+                        <span class="skill-tag">Retrofit</span>
+                        <span class="skill-tag">Room</span>
+                        <span class="skill-tag">Firebase</span>
+                        <span class="skill-tag">WebRTC</span>
+                        <span class="skill-tag">Coroutines</span>
+                        <span class="skill-tag">ExoPlayer</span>
+                        <span class="skill-tag">Material 3</span>
                     </div>
                 </div>
-                <div class="contact-links fade-in">
-                    <a href="mailto:binod.basnet777@gmail.com?subject=Job%20Opportunity&body=Hi%20Binod%2C%0A%0AI%20saw%20your%20portfolio%20and%20I'd%20like%20to%20connect%20about%20a%20job%20opportunity.%0A%0AMy%20name%3A%20%0AMy%20organization%3A%20%0AMy%20message%3A%20%0A%0AThanks!" class="contact-link">
-                        <svg class="contact-link-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                        <div class="contact-link-text">
-                            <div class="contact-link-label">Email</div>
-                            <div class="contact-link-value"><span class="__cf_email__" data-cfemail="cba9a2a5a4afe5a9aab8a5aebffcfcfc8baca6aaa2a7e5a8a4a6">[email&#160;protected]</span></div>
-                        </div>
-                    </a>
-                    <a href="https://linkedin.com/in/binodbasnet" target="_blank" class="contact-link">
-                        <svg class="contact-link-icon" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                        </svg>
-                        <div class="contact-link-text">
-                            <div class="contact-link-label">LinkedIn</div>
-                            <div class="contact-link-value">linkedin.com/in/binodbasnet</div>
-                        </div>
-                    </a>
-                    <a href="https://github.com/BinodDai" target="_blank" class="contact-link">
-                        <svg class="contact-link-icon" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        <div class="contact-link-text">
-                            <div class="contact-link-label">GitHub</div>
-                            <div class="contact-link-value">github.com/BinodDai</div>
-                        </div>
-                    </a>
-                    <a href="tel:+9779808838502" class="contact-link">
-                        <svg class="contact-link-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                        </svg>
-                        <div class="contact-link-text">
-                            <div class="contact-link-label">Phone</div>
-                            <div class="contact-link-value">+977 980-8838502</div>
-                        </div>
-                    </a>
+                <div class="skill-category">
+                    <h3>Tools</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Android Studio</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">Jenkins</span>
+                        <span class="skill-tag">Fastlane</span>
+                        <span class="skill-tag">Jira</span>
+                        <span class="skill-tag">Azure DevOps</span>
+                        <span class="skill-tag">GitLab</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer>
-        <div class="container">
-            <p>© 2026 Binod Basnet. Built with passion in Kathmandu, Nepal.</p>
+<!-- EXPERIENCE -->
+<section id="experience">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag">Experience</div>
+            <h2 class="section-title">Where I've Worked</h2>
         </div>
-    </footer>
+        <div class="experience-list">
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <h3>Android Engineer</h3>
+                        <div class="company">F1Soft International</div>
+                    </div>
+                    <div class="experience-meta">
+                        <div class="duration">Aug 2024 — Present</div>
+                        <div class="location">Sanepa, Lalitpur</div>
+                        <div class="current-badge">CURRENT</div>
+                    </div>
+                </div>
+                <ul class="experience-description">
+                    <li>Built a remittance app using Kotlin and Jetpack Compose</li>
+                    <li>Created a custom Image Picker component using C and C++ for better performance</li>
+                    <li>Set up CI/CD with Fastlane to make builds and deployments automatic</li>
+                    <li>Managed tasks using Azure DevOps and used GitLab for code management</li>
+                    <li>Followed Agile methods and met tight deadlines</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <h3>Android Engineer</h3>
+                        <div class="company">InfoDevelopers</div>
+                    </div>
+                    <div class="experience-meta">
+                        <div class="duration">Jul 2021 — Aug 2024</div>
+                        <div class="location">Mitrapark, Kathmandu</div>
+                    </div>
+                </div>
+                <ul class="experience-description">
+                    <li>Changed the codebase from Java to Kotlin to improve speed and maintenance</li>
+                    <li>Worked on multiple projects including mobile banking apps</li>
+                    <li>Set up CI/CD using Jenkins for automatic builds</li>
+                    <li>Helped junior developers learn best practices and improve their code</li>
+                    <li>Built audio and video call features into mobile apps using WebRTC</li>
+                    <li>Fixed bugs on different Android devices and versions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        // Smooth 
+<!-- PROJECTS -->
+<section id="projects">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag">Projects</div>
+            <h2 class="section-title">What I've Built</h2>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-num">01</div>
+                <div class="project-name">FoneMoney</div>
+                <div class="project-tech">Kotlin · Jetpack Compose · C/C++</div>
+                <p class="project-desc">A secure remittance app for fast international money transfers.</p>
+                <ul class="project-points">
+                    <li>Built with Jetpack Compose for modern UI</li>
+                    <li>Used C/C++ for native image handling</li>
+                    <li>Worked with international teams</li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <div class="project-num">02</div>
+                <div class="project-name">mDabali</div>
+                <div class="project-tech">Kotlin · Jetpack Compose · Material 3</div>
+                <p class="project-desc">A microfinance banking app with online and offline payment services.</p>
+                <ul class="project-points">
+                    <li>Migrated codebase from Java to Kotlin</li>
+                    <li>Added Material Design 3 for better UI</li>
+                    <li>Supports multiple app variants</li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <div class="project-num">03</div>
+                <div class="project-name">Nimbuzz</div>
+                <div class="project-tech">Kotlin · WebRTC · ExoPlayer</div>
+                <p class="project-desc">A complete digital platform with chat, video calls, streaming, and shopping.</p>
+                <ul class="project-points">
+                    <li>Built audio/video calls with WebRTC</li>
+                    <li>Added live streaming with ExoPlayer</li>
+                    <li>Worked with local and international teams</li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <div class="project-num">04</div>
+                <div class="project-name">Bihebari</div>
+                <div class="project-tech">Kotlin · WebRTC · Firebase</div>
+                <p class="project-desc">An online Nepalese matchmaking platform to help people find their life partner.</p>
+                <ul class="project-points">
+                    <li>Added video and audio calls with WebRTC</li>
+                    <li>Used Firebase for authentication</li>
+                    <li>Created smooth navigation experience</li>
+                </ul>
+            </div>
+            <div class="project-card">
+                <div class="project-num">05</div>
+                <div class="project-name">Aqua World</div>
+                <div class="project-tech">Kotlin · Room · Retrofit</div>
+                <p class="project-desc">An online water ordering app with a wide range of water supply products.</p>
+                <ul class="project-points">
+                    <li>Published on Google Play Store</li>
+                    <li>Used Room for offline storage</li>
+                    <li>Added Firebase analytics</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-text">
+                <div class="section-tag">Contact</div>
+                <h2>Let's Work Together</h2>
+                <p>I'm looking for Master's degree opportunities with scholarships. If you have any opportunities or just want to say hi — feel free to reach out!</p>
+                <div class="email-template-box">
+                    <h3>Quick Email Templates</h3>
+                    <div class="email-btns">
+                        <a href="mailto:binod.basnet777@gmail.com" class="email-btn">
+                            <span>📧</span><span>Job Opportunity</span><span class="arrow">→</span>
+                        </a>
+                        <a href="mailto:binod.basnet777@gmail.com" class="email-btn">
+                            <span>🎓</span><span>Scholarship Info</span><span class="arrow">→</span>
+                        </a>
+                        <a href="mailto:binod.basnet777@gmail.com" class="email-btn">
+                            <span>💬</span><span>General Inquiry</span><span class="arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-links">
+                <a href="mailto:binod.basnet777@gmail.com" class="contact-link">
+                    <div class="contact-link-icon">✉️</div>
+                    <div><div class="contact-link-label">Email</div><div class="contact-link-value">binod.basnet777@gmail.com</div></div>
+                </a>
+                <a href="https://linkedin.com/in/binodbasnet" target="_blank" rel="noopener" class="contact-link">
+                    <div class="contact-link-icon">💼</div>
+                    <div><div class="contact-link-label">LinkedIn</div><div class="contact-link-value">linkedin.com/in/binodbasnet</div></div>
+                </a>
+                <a href="https://github.com/BinodDai" target="_blank" rel="noopener" class="contact-link">
+                    <div class="contact-link-icon">💻</div>
+                    <div><div class="contact-link-label">GitHub</div><div class="contact-link-value">github.com/BinodDai</div></div>
+                </a>
+                <a href="tel:+9779808838502" class="contact-link">
+                    <div class="contact-link-icon">📱</div>
+                    <div><div class="contact-link-label">Phone</div><div class="contact-link-value">+977 980-8838502</div></div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <p>© 2026 <span class="footer-accent">Binod Basnet</span> · Built with passion in Kathmandu 🇳🇵</p>
+        <a href="#hero" class="back-top">↑ Back to top</a>
+    </div>
+</footer>
+
+<script>
+    // Hamburger
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+    });
+    document.querySelectorAll('.mob-link, .mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+        });
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const top = target.getBoundingClientRect().top + window.pageYOffset - 70;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Active nav on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a:not(.nav-cv)');
+    window.addEventListener('scroll', () => {
+        const scrollPos = window.pageYOffset + 100;
+        sections.forEach(section => {
+            if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+                navLinks.forEach(link => {
+                    link.style.color = link.getAttribute('href') === '#' + section.id ? '#00ff88' : '';
+                });
+            }
+        });
+    });
+
+    // Scroll reveal
+    const items = document.querySelectorAll('.experience-item, .project-card, .contact-link, .skill-category, .email-btn');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, i * 60);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    items.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(el);
+    });
+</script>
+</body>
+</html>
