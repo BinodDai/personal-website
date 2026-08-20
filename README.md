@@ -1,4 +1,4 @@
-# Binod Basnet - Portfolio Website
+# Binod Basnet - Portfolio Website 
 
 Personal portfolio website for Binod Basnet, Android Engineer from Kathmandu, Nepal.
 
